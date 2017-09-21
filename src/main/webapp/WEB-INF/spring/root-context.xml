@@ -12,6 +12,40 @@
 
     <context:property-placeholder location="classpath:jdbc.properties"/>
 
+    <context:component-scan base-package="org.fool.ms.producer"/>
+    <context:component-scan base-package="org.fool.ms.consumer"/>
+
+    <bean id="msProducer" class="org.fool.ms.producer.MsProducer">
+        <property name="properties">
+            <props>
+                <prop key="topic">test</prop>
+                <prop key="bootstrap.servers">hadoop-0004:9092,hadoop-0005:9092,hadoop-0006:9092</prop>
+                <prop key="acks">all</prop>
+                <prop key="retries">3</prop>
+                <prop key="batch.size">16384</prop>
+                <prop key="linger.ms">1</prop>
+                <prop key="buffer.memory">33554432</prop>
+                <prop key="key.serializer">org.apache.kafka.common.serialization.StringSerializer</prop>
+                <prop key="value.serializer">org.apache.kafka.common.serialization.StringSerializer</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="msConsumer" class="org.fool.ms.consumer.MsConsumer">
+        <property name="properties">
+            <props>
+                <prop key="topic">test</prop>
+                <prop key="bootstrap.servers">hadoop-0004:9092,hadoop-0005:9092,hadoop-0006:9092</prop>
+                <prop key="group.id">testGroup</prop>
+                <prop key="enable.auto.commit">true</prop>
+                <prop key="auto.commit.interval.ms">1000</prop>
+                <prop key="key.deserializer">org.apache.kafka.common.serialization.StringDeserializer</prop>
+                <prop key="value.deserializer">org.apache.kafka.common.serialization.StringDeserializer</prop>
+            </props>
+
+        </property>
+    </bean>
+
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName" value="${jdbc.driverClassName}"/>
         <property name="url" value="${jdbc.url}"/>
